@@ -1,6 +1,12 @@
 <?php require "../includes/header.php"; ?>
 <?php require "../config/config.php"; ?>
 <?php
+
+
+if (isset($_SESSION['username'])) {
+    echo "<script> window.location.href='" . $appurl . "';</script>";
+}
+
 if (isset($_POST['submit'])) {
     if (
         empty($_POST['email']) or
@@ -23,7 +29,12 @@ if (isset($_POST['submit'])) {
             //validate pass
 
             if (password_verify($password, $fetch['mypassword'])) {
-                echo "<script>alert('LOGGED IN');</script>";
+                $_SESSION['username'] = $fetch['username'];
+                $_SESSION['email'] = $fetch['email'];
+                $_SESSION['user_id'] = $fetch['user_id'];
+                $_SESSION['image'] = $fetch['image'];
+
+                echo "<script> window.location.href='" . $appurl . "';</script>";
             } else {
                 echo "<script>alert('email or password is invalid');</script>";
             }

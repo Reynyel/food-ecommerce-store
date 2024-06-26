@@ -1,6 +1,11 @@
 <?php require "../includes/header.php"; ?>
 <?php require "../config/config.php"; ?>
 <?php
+
+if (isset($_SESSION['username'])) {
+    echo "<script> window.location.href='" . $appurl . "';</script>";
+}
+
 if (isset($_POST['submit'])) {
     if (
         empty($_POST['fullname']) or

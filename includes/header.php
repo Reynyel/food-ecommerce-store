@@ -1,4 +1,5 @@
 <?php
+session_start();
 $appurl = "http://localhost/freshcery/";
 ?>
 
@@ -30,7 +31,7 @@ $appurl = "http://localhost/freshcery/";
         <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-transparent" id="page-navigation">
             <div class="container">
                 <!-- Navbar Brand -->
-                <a href="index.html" class="navbar-brand">
+                <a href="<?php echo $appurl; ?>index.php" class="navbar-brand">
                     <img src="<?php echo $appurl; ?>/assets/img/logo/logo.png" alt="">
                 </a>
 
@@ -43,29 +44,41 @@ $appurl = "http://localhost/freshcery/";
                     <!-- Navbar Menu -->
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a href="shop.html" class="nav-link">Shop</a>
+                            <a href="<?php echo $appurl; ?>shop.php" class="nav-link">Shop</a>
                         </li>
                         <li class="nav-item">
-                            <a href="register.html" class="nav-link">Register</a>
+                            <a href="<?php echo $appurl; ?>faq.php" class="nav-link">FAQ</a>
                         </li>
                         <li class="nav-item">
-                            <a href="login.html" class="nav-link">Login</a>
+                            <a href="<?php echo $appurl; ?>contact.php" class="nav-link">Contact</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <div class="avatar-header"><img src="<?php echo $appurl; ?>/assets/img/logo/avatar.jpg"></div> John Doe
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="transaction.html">Transactions History</a>
-                                <a class="dropdown-item" href="setting.html">Settings</a>
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a href="cart.html" class="nav-link" data-toggle="" aria-haspopup="true" aria-expanded="false">
-                                <i class="fa fa-shopping-basket"></i> <span class="badge badge-primary">5</span>
-                            </a>
+                        <?php if (!isset($_SESSION['username'])) : ?>
+                            <li class="nav-item">
+                                <a href="<?php echo $appurl; ?>auth/register.php" class="nav-link">Register</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="<?php echo $appurl; ?>auth/login.php" class="nav-link">Login</a>
+                            </li>
 
-                        </li>
+                        <?php else : ?>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="javascript:void(0)" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <div class="avatar-header"><img src="<?php echo $appurl; ?>/assets/img/logo/<?php echo $_SESSION['image']; ?>"></div> <?php echo $_SESSION['username'] ?>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="<?php echo $appurl; ?>transaction.php">Transactions History</a>
+                                    <a class="dropdown-item" href="<?php echo $appurl; ?>setting.php">Settings</a>
+                                    <a class="dropdown-item" href="<?php echo $appurl; ?>/auth/logout.php">Log out</a>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="cart.html" class="nav-link" data-toggle="" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-shopping-basket"></i> <span class="badge badge-primary">5</span>
+                                </a>
+
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
 
