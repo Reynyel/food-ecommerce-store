@@ -1,27 +1,68 @@
-<?php require "../includes/header.php"; ?>
-<?php require "../config/config.php"; ?>
 <?php
+// Including necessary files
+require "../includes/header.php";
+require "../config/config.php";
+
+// Handling form submission to add products to cart
+if (isset($_POST['submit'])) {
+    // Retrieving form data
+    $pro_id = $_POST['pro_id'];
+    $pro_title = $_POST['pro_title'];
+    $pro_image = $_POST['pro_image'];
+    $pro_price = $_POST['pro_price'];
+    $pro_qty = $_POST['pro_qty'];
+    $user_id = $_POST['user_id'];
+
+    // Preparing and executing SQL insertion into 'cart' table
+    $insert = $conn->prepare("INSERT INTO cart (pro_id, pro_title, pro_image, pro_price, pro_qty, user_id) VALUES(:pro_id, :pro_title, :pro_image, :pro_price, :pro_qty, :user_id)");
+
+    $insert->execute([
+        ':pro_id' => $pro_id,
+        ':pro_title' => $pro_title,
+        ':pro_image' => $pro_image,
+        ':pro_price' => $pro_price,
+        ':pro_qty' => $pro_qty,
+        ':user_id' => $user_id,
+    ]);
+}
+
+// Handling product details retrieval based on ID from URL parameter
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
-    $select = $conn->query("SELECT * FROM products WHERE status = 1 AND id = '$id'");
-    $select->execute();
+    $select = $conn->prepare("SELECT * FROM products WHERE status = 1 AND id = :id");
+    $select->execute([':id' => $id]);
 
+    // Fetching the selected product details
     $product = $select->fetch(PDO::FETCH_OBJ);
 
-    // fetch related products
-    $relatedProducts = $conn->query("SELECT * FROM products WHERE status = 1 
-    AND category_id = '$product->category_id' AND id != '$id'");
+    // Fetching related products based on category of the selected product
+    $relatedProducts = $conn->prepare("SELECT * FROM products WHERE status = 1 AND category_id = :category_id AND id != :id");
+    $relatedProducts->execute([':category_id' => $product->category_id, ':id' => $id]);
 
-    $relatedProducts->execute();
-
-    // GET ALL RELATED PRODUCTS
+    // Fetching all related products as an array of objects
     $allRelatedProducts = $relatedProducts->fetchAll(PDO::FETCH_OBJ);
 
-    // var_dump($allRelatedProducts);
+    // Initialize $validate to avoid undefined variable warnings
+    $validate = null;
+
+    // Validate cart products
+    if (isset($_SESSION['user_id'])) {
+        $validate = $conn->prepare("SELECT * FROM cart WHERE pro_id = :pro_id AND user_id = :user_id");
+        $validate->execute([':pro_id' => $id, ':user_id' => $_SESSION['user_id']]);
+
+        // Error handling for SQL query
+        if ($validate === false) {
+            $errorInfo = $conn->errorInfo();
+            echo "SQL Error: " . $errorInfo[2];
+        }
+    }
 } else {
+    // If no ID parameter is provided, do nothing or handle accordingly
 }
 ?>
+<!-- HTML section starts here -->
 <div id="page-content" class="page-content">
+    <!-- Banner section -->
     <div class="banner">
         <div class="jumbotron jumbotron-bg text-center rounded-0" style="background-image: url('<?php echo $appurl; ?>/assets/img/bg-header.jpg');">
             <div class="container">
@@ -34,9 +75,11 @@ if (isset($_GET['id'])) {
             </div>
         </div>
     </div>
+    <!-- Product detail section -->
     <div class="product-detail">
         <div class="container">
             <div class="row">
+                <!-- Product image slider -->
                 <div class="col-sm-6">
                     <div class="slider-zoom">
                         <a href="<?php echo $appurl; ?>/assets/img/<?php echo $product->image; ?>" class="cloud-zoom" rel="transparentImage: 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', useWrapper: false, showTitle: false, zoomWidth:'500', zoomHeight:'500', adjustY:0, adjustX:10" id="cloudZoom">
@@ -44,6 +87,7 @@ if (isset($_GET['id'])) {
                         </a>
                     </div>
                 </div>
+                <!-- Product details -->
                 <div class="col-sm-6">
                     <p>
                         <strong>Overview</strong><br>
@@ -57,31 +101,67 @@ if (isset($_GET['id'])) {
                                 <!-- <span class="old-price">Rp 150.000</span> -->
                             </p>
                         </div>
-
                     </div>
                     <p class="mb-1">
                         <strong>Quantity</strong>
                     </p>
-                    <div class="row">
-                        <div class="col-sm-5">
-                            <input class="form-control" type="number" min="1" data-bts-button-down-class="btn btn-primary" data-bts-button-up-class="btn btn-primary" value="<?php echo $product->quantity; ?>" name="vertical-spin">
+                    <!-- Form to add product to cart -->
+                    <form method="POST" id="form-data">
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="form-control" type="text" name="pro_title" value="<?php echo $product->title; ?>">
+                            </div>
                         </div>
-                        <div class="col-sm-6"><span class="pt-1 d-inline-block">Pack (1000 gram)</span></div>
-                    </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="form-control" type="text" name="pro_image" value="<?php echo $product->image; ?>">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="form-control" type="text" name="pro_price" value="<?php echo $product->price; ?>">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="form-control" type="text" name="user_id" value="<?php echo isset($_SESSION['id']) ? $_SESSION['id'] : ''; ?>">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="form-control" type="text" name="pro_id" value="<?php echo $product->id; ?>">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="form-control" type="number" min="1" data-bts-button-down-class="btn btn-primary" data-bts-button-up-class="btn btn-primary" value="<?php echo $product->quantity; ?>" name="pro_qty">
+                            </div>
+                            <div class="col-sm-6"><span class="pt-1 d-inline-block">Pack (1000 gram)</span></div>
+                        </div>
 
-                    <button class="mt-3 btn btn-primary btn-lg">
-                        <i class="fa fa-shopping-basket"></i> Add to Cart
-                    </button>
+                        <!-- Submit button to add to cart -->
+                        <?php if ($validate && $validate->rowCount() > 0) : ?>
+                            <button name="submit" type="submit" class="btn-insert mt-3 btn btn-primary btn-lg" disabled>
+                                <i class="fa fa-shopping-basket"></i> Added to Cart
+                            </button>
+                        <?php else : ?>
+                            <button name="submit" type="submit" class="btn-insert mt-3 btn btn-primary btn-lg">
+                                <i class="fa fa-shopping-basket"></i> Add to Cart
+                            </button>
+                        <?php endif; ?>
+
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
+    <!-- Related products section -->
     <section id="related-product">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <h2 class="title">Related Products</h2>
+                    <!-- Carousel for related products -->
                     <div class="product-carousel owl-carousel">
                         <?php foreach ($allRelatedProducts as $allRelatedProduct) : ?>
                             <div class="item">
@@ -100,20 +180,18 @@ if (isset($_GET['id'])) {
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="<?php echo $appurl; ?>assets/img/<?php echo $allRelatedProduct->image; ?>" alt="Card image 2" class="card-img-top">
+                                        <img src="<?php echo $appurl; ?>assets/img/<?php echo $allRelatedProduct->image; ?>" class="card-img-top" alt="...">
                                     </div>
                                     <div class="card-body">
-                                        <h4 class="card-title">
-                                            <a href="<?php echo $allRelatedProduct->exp_date; ?>/products/detail-product.php"><?php echo $allRelatedProduct->title; ?></a>
-                                        </h4>
+                                        <h5 class="card-title">
+                                            <a href="<?php echo $appurl; ?>/shops/detail-products.php?id=<?php echo $allRelatedProduct->id; ?>"><?php echo $allRelatedProduct->title; ?></a>
+                                        </h5>
                                         <div class="card-price">
-                                            <!-- <span class="discount">Rp. 300.000</span> -->
-                                            <span class="reguler">PHP <?php echo $allRelatedProduct->price; ?></span>
+                                            <span class="discount">PHP <?php echo $allRelatedProduct->price; ?></span>
                                         </div>
-                                        <a href="<?php echo $appurl; ?>/products/detail-product.php?id=<?php echo $allRelatedProduct->id; ?>" class="btn btn-block btn-primary">
-                                            Add to Cart
+                                        <a href="<?php echo $appurl; ?>/shops/detail-products.php?id=<?php echo $allRelatedProduct->id; ?>" class="btn btn-block btn-primary">
+                                            Add to Cart <i class="fa fa-angle-right"></i>
                                         </a>
-
                                     </div>
                                 </div>
                             </div>
@@ -121,85 +199,40 @@ if (isset($_GET['id'])) {
                     </div>
                 </div>
             </div>
+        </div>
     </section>
 </div>
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <h5>About</h5>
-                <p>Nisi esse dolor irure dolor eiusmod ex deserunt proident cillum eu qui enim occaecat sunt aliqua anim eiusmod qui ut voluptate.</p>
-            </div>
-            <div class="col-md-3">
-                <h5>Links</h5>
-                <ul>
-                    <li>
-                        <a href="about.html">About</a>
-                    </li>
-                    <li>
-                        <a href="contact.html">Contact Us</a>
-                    </li>
-                    <li>
-                        <a href="faq.html">FAQ</a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)">How it Works</a>
-                    </li>
-                    <li>
-                        <a href="terms.html">Terms</a>
-                    </li>
-                    <li>
-                        <a href="privacy.html">Privacy Policy</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <h5>Contact</h5>
-                <ul>
-                    <li>
-                        <a href="tel:+620892738334"><i class="fa fa-phone"></i> 08272367238</a>
-                    </li>
-                    <li>
-                        <a href="mailto:hello@domain.com"><i class="fa fa-envelope"></i> hello@domain.com</a>
-                    </li>
-                </ul>
+<!-- HTML section ends here -->
+<?php require "../includes/footer.php"; ?>
 
-                <h5>Follow Us</h5>
-                <ul class="social">
-                    <li>
-                        <a href="javascript:void(0)" target="_blank"><i class="fab fa-facebook-f"></i></a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)" target="_blank"><i class="fab fa-instagram"></i></a>
-                    </li>
-                    <li>
-                        <a href="javascript:void(0)" target="_blank"><i class="fab fa-youtube"></i></a>
-                    </li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <h5>Get Our App</h5>
-                <ul class="mb-0">
-                    <li class="download-app">
-                        <a href="#"><img src="assets/img/playstore.png"></a>
-                    </li>
-                    <li style="height: 200px">
-                        <div class="mockup">
-                            <img src="assets/img/mockup.png">
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <?php require "../includes/footer.php"; ?>
-    <script>
-        $(document).ready(function() {
-            $(".form-control").keyup(function() {
-                var value = $(this).val();
-                value = value.replace(/^(0*)/, "");
-                $(this).val(1);
-            });
+
+<script>
+    // JavaScript section for additional functionality
+    $(document).ready(function() {
+        // Ensure quantity input value is at least 1
+        $(".form-control").keyup(function() {
+            var value = $(this).val();
+            value = value.replace(/^(0*)/, "");
+            $(this).val(1);
+        });
+
+        // AJAX call to add product to cart without refreshing the page
+        $(".btn-insert").on("click", function(e) {
+            e.preventDefault();
+
+            var form_data = $("#form-data").serialize() + '&submit=submit';
+
+            $.ajax({
+                url: "detail-product.php?id=<?php echo $id; ?>",
+                method: "POST",
+                data: form_data,
+                success: function() {
+                    alert("Product added to cart");
+
+                    $(".btn-insert").html("<i class='fa fa-shopping-basket'></i> Added to Cart").prop("disabled", true);
+                }
+            })
 
         })
-    </script>
+    })
+</script>
