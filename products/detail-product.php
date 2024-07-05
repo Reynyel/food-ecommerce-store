@@ -46,9 +46,9 @@ if (isset($_GET['id'])) {
     $validate = null;
 
     // Validate cart products
-    if (isset($_SESSION['user_id'])) {
-        $validate = $conn->prepare("SELECT * FROM cart WHERE pro_id = :pro_id AND user_id = :user_id");
-        $validate->execute([':pro_id' => $id, ':user_id' => $_SESSION['user_id']]);
+    if (isset($_SESSION['id'])) {
+        $validate = $conn->prepare("SELECT * FROM cart WHERE pro_id = $id AND user_id = $_SESSION[id]");
+        $validate->execute();
 
         // Error handling for SQL query
         if ($validate === false) {
@@ -109,27 +109,27 @@ if (isset($_GET['id'])) {
                     <form method="POST" id="form-data">
                         <div class="row">
                             <div class="col-sm-5">
-                                <input class="form-control" type="text" name="pro_title" value="<?php echo $product->title; ?>">
+                                <input class="form-control" type="hidden" name="pro_title" value="<?php echo $product->title; ?>">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5">
-                                <input class="form-control" type="text" name="pro_image" value="<?php echo $product->image; ?>">
+                                <input class="form-control" type="hidden" name="pro_image" value="<?php echo $product->image; ?>">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5">
-                                <input class="form-control" type="text" name="pro_price" value="<?php echo $product->price; ?>">
+                                <input class="form-control" type="hidden" name="pro_price" value="<?php echo $product->price; ?>">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5">
-                                <input class="form-control" type="text" name="user_id" value="<?php echo isset($_SESSION['id']) ? $_SESSION['id'] : ''; ?>">
+                                <input class="form-control" type="hidden" name="user_id" value="<?php echo isset($_SESSION['id']) ? $_SESSION['id'] : ''; ?>">
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5">
-                                <input class="form-control" type="text" name="pro_id" value="<?php echo $product->id; ?>">
+                                <input class="form-control" type="hidden" name="pro_id" value="<?php echo $product->id; ?>">
                             </div>
                         </div>
                         <div class="row">
