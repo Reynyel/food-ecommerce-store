@@ -240,9 +240,14 @@ if (isset($_GET['id'])) {
                 success: function() {
                     alert("Product added to cart");
                     $(".btn-insert").html("<i class='fa fa-shopping-basket'></i> Added to Cart").prop("disabled", true);
+                    withRef();
                 }
             });
         });
+
+        function withRef() {
+            $("body").load("detail-product.php?id=<?php echo $id; ?>");
+        }
 
         $(".pro_qty").on('input', function() {
             var $el = $(this).closest('form');

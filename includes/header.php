@@ -1,6 +1,13 @@
 <?php
 session_start();
 $appurl = "http://localhost/freshcery/";
+
+require dirname(dirname(__FILE__)) . "/config/config.php";
+
+$cart = $conn->query("SELECT COUNT(*) as num_products FROM cart WHERE user_id='$_SESSION[id]'");
+$cart->execute();
+
+$num = $cart->fetch(PDO::FETCH_OBJ);
 ?>
 
 <!DOCTYPE html>
@@ -74,7 +81,7 @@ $appurl = "http://localhost/freshcery/";
 
                             <li class="nav-item">
                                 <a href="<?php echo $appurl; ?>/products/cart.php" class="nav-link" data-toggle="" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-shopping-basket"></i> <span class="badge badge-primary">5</span>
+                                    <i class="fa fa-shopping-basket"></i> <span class="badge badge-primary"><?php echo $num->num_products; ?></span>
                                 </a>
 
                             </li>

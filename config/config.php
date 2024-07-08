@@ -5,6 +5,7 @@
 //     header('location: http://localhost/freshcery/index.php');
 //     exit;
 // }
+
 $servername = "localhost";
 $username = "root";
 $password = "ranielle25";
