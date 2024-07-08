@@ -11,10 +11,11 @@ if (isset($_POST['submit'])) {
     $pro_image = $_POST['pro_image'];
     $pro_price = $_POST['pro_price'];
     $pro_qty = $_POST['pro_qty'];
+    $pro_subtotal = $_POST['pro_subtotal'];
     $user_id = $_POST['user_id'];
 
     // Preparing and executing SQL insertion into 'cart' table
-    $insert = $conn->prepare("INSERT INTO cart (pro_id, pro_title, pro_image, pro_price, pro_qty, user_id) VALUES(:pro_id, :pro_title, :pro_image, :pro_price, :pro_qty, :user_id)");
+    $insert = $conn->prepare("INSERT INTO cart (pro_id, pro_title, pro_image, pro_price, pro_qty, pro_subtotal, user_id) VALUES(:pro_id, :pro_title, :pro_image, :pro_price, :pro_qty, :pro_subtotal,:user_id)");
 
     $insert->execute([
         ':pro_id' => $pro_id,
@@ -22,6 +23,7 @@ if (isset($_POST['submit'])) {
         ':pro_image' => $pro_image,
         ':pro_price' => $pro_price,
         ':pro_qty' => $pro_qty,
+        ':pro_subtotal' => $pro_subtotal,
         ':user_id' => $user_id,
     ]);
 }
@@ -134,22 +136,31 @@ if (isset($_GET['id'])) {
                         </div>
                         <div class="row">
                             <div class="col-sm-5">
-                                <input class="form-control" type="number" min="1" data-bts-button-down-class="btn btn-primary" data-bts-button-up-class="btn btn-primary" value="<?php echo $product->quantity; ?>" name="pro_qty">
+                                <input class="pro_qty form-control" type="number" min="1" data-bts-button-down-class="btn btn-primary" data-bts-button-up-class="btn btn-primary" value="<?php echo $product->quantity; ?>" name="pro_qty">
                             </div>
                             <div class="col-sm-6"><span class="pt-1 d-inline-block">Pack (1000 gram)</span></div>
                         </div>
-
-                        <!-- Submit button to add to cart -->
-                        <?php if ($validate && $validate->rowCount() > 0) : ?>
-                            <button name="submit" type="submit" class="btn-insert mt-3 btn btn-primary btn-lg" disabled>
-                                <i class="fa fa-shopping-basket"></i> Added to Cart
-                            </button>
+                        <div class="row">
+                            <div class="col-sm-5">
+                                <input class="subtotal_price form-control" type="hidden" name="pro_subtotal" value="<?php echo $product->price * $product->quantity; ?>">
+                            </div>
+                        </div>
+                        <?php if (isset($_SESSION['username'])) : ?>
+                            <!-- Submit button to add to cart -->
+                            <?php if ($validate && $validate->rowCount() > 0) : ?>
+                                <button name="submit" type="submit" class="btn-insert mt-3 btn btn-primary btn-lg" disabled>
+                                    <i class="fa fa-shopping-basket"></i> Added to Cart
+                                </button>
+                            <?php else : ?>
+                                <button name="submit" type="submit" class="btn-insert mt-3 btn btn-primary btn-lg">
+                                    <i class="fa fa-shopping-basket"></i> Add to Cart
+                                </button>
+                            <?php endif; ?>
                         <?php else : ?>
-                            <button name="submit" type="submit" class="btn-insert mt-3 btn btn-primary btn-lg">
-                                <i class="fa fa-shopping-basket"></i> Add to Cart
-                            </button>
+                            <div class="alert alert-success bg-success text-white text-center mt-3">
+                                Log in to buy this product.
+                            </div>
                         <?php endif; ?>
-
                     </form>
                 </div>
             </div>
@@ -207,13 +218,13 @@ if (isset($_GET['id'])) {
 
 
 <script>
-    // JavaScript section for additional functionality
     $(document).ready(function() {
         // Ensure quantity input value is at least 1
-        $(".form-control").keyup(function() {
+        $(".pro_qty").on('input', function() {
             var value = $(this).val();
-            value = value.replace(/^(0*)/, "");
-            $(this).val(1);
+            if (value < 1) {
+                $(this).val(1);
+            }
         });
 
         // AJAX call to add product to cart without refreshing the page
@@ -228,11 +239,24 @@ if (isset($_GET['id'])) {
                 data: form_data,
                 success: function() {
                     alert("Product added to cart");
-
                     $(".btn-insert").html("<i class='fa fa-shopping-basket'></i> Added to Cart").prop("disabled", true);
                 }
-            })
+            });
+        });
 
-        })
-    })
+        $(".pro_qty").on('input', function() {
+            var $el = $(this).closest('form');
+
+            var pro_qty = $el.find(".pro_qty").val();
+            var pro_price = "<?php echo $product->price; ?>"; // Ensure this line fetches the correct price
+
+            if (!isNaN(pro_qty) && !isNaN(pro_price)) {
+                var subtotal = pro_qty * pro_price;
+                // alert(subtotal);
+                $el.find(".subtotal_price").val(subtotal);
+            } else {
+                alert("Error: Invalid quantity or price.");
+            }
+        });
+    });
 </script>

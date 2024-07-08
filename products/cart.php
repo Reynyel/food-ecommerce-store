@@ -33,7 +33,7 @@ $allProducts = $products->fetchAll(PDO::FETCH_OBJ);
                                 <tr>
                                     <th width="10%"></th>
                                     <th>Products</th>
-                                    <th>Price</th>
+                                    <th>Price in PHP</th>
                                     <th width="15%">Quantity</th>
                                     <th width="15%">Update</th>
                                     <th>Subtotal</th>
@@ -41,38 +41,44 @@ $allProducts = $products->fetchAll(PDO::FETCH_OBJ);
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach ($allProducts as $product) : ?>
-                                    <tr>
-                                        <td>
-                                            <img src="<?php echo $appurl; ?>/assets/img/<?php echo $product->pro_image; ?>" width="60">
-                                        </td>
-                                        <td>
-                                            <?php echo $product->pro_title; ?><br>
-                                            <small>1000g</small>
-                                        </td>
-                                        <td>
-                                            PHP <?php echo $product->price; ?>
-                                        </td>
-                                        <td>
-                                            <input class="form-control" type="number" min="1" data-bts-button-down-class="btn btn-primary" data-bts-button-up-class="btn btn-primary" value="<?php echo $product->pro_qty; ?>" name="vertical-spin">
-                                        </td>
-                                        <td>
-                                            <a href="#" class="btn btn-primary">UPDATE</a>
-                                        </td>
-                                        <td>
-                                            Rp 30.000
-                                        </td>
-                                        <td>
-                                            <a href="javasript:void" class="text-danger"><i class="fa fa-times"></i></a>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
+                                <?php if (count($allProducts) > 0) : ?>
+                                    <?php foreach ($allProducts as $product) : ?>
+                                        <tr>
+                                            <td>
+                                                <img src="<?php echo $appurl; ?>/assets/img/<?php echo $product->pro_image; ?>" width="60">
+                                            </td>
+                                            <td>
+                                                <?php echo $product->pro_title; ?><br>
+                                                <small>1000g</small>
+                                            </td>
+                                            <td class="pro_price">
+                                                <?php echo $product->pro_price; ?>
+                                            </td>
+                                            <td>
+                                                <input class="pro_qty form-control" type="number" min="1" data-bts-button-down-class="btn btn-primary" data-bts-button-up-class="btn btn-primary" value="<?php echo $product->pro_qty; ?>" name="vertical-spin">
+                                            </td>
+                                            <td>
+                                                <button href="#" value="<?php echo $product->id; ?>" class="btn btn-update btn-primary">UPDATE</button>
+                                            </td>
+                                            <td class="subtotal_price">
+                                                <?php echo $product->pro_price * $product->pro_qty; ?>
+                                            </td>
+                                            <td>
+                                                <a href="javasript:void" class="text-danger"><i class="fa fa-times"></i></a>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php else : ?>
+                                    <div class="alert alert-success bg-success text-white text-center">
+                                        There are no products in cart.
+                                    </div>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
                 </div>
                 <div class="col">
-                    <a href="shop.html" class="btn btn-default">Continue Shopping</a>
+                    <a href="<?php echo $appurl; ?>/shop.php" class="btn btn-default">Continue Shopping</a>
                 </div>
                 <div class="col text-right">
 
@@ -96,4 +102,44 @@ $allProducts = $products->fetchAll(PDO::FETCH_OBJ);
         });
 
     })
+
+    $(".pro_qty").mouseup(function() {
+
+        var $el = $(this).closest('tr');
+
+
+
+        var pro_qty = $el.find(".pro_qty").val();
+        var pro_price = $el.find(".pro_price").html();
+
+        var sub_total = pro_qty * pro_price;
+        $el.find(".subtotal_price").html("");
+
+        $el.find(".subtotal_price").append(sub_total);
+
+        $(".btn-update").on('click', function(e) {
+
+            var id = $(this).val();
+
+
+            $.ajax({
+                type: "POST",
+                url: "update-product.php",
+                data: {
+                    update: "update",
+                    id: id,
+                    pro_qty: pro_qty,
+                    subtotal: sub_total
+                },
+
+                success: function() {
+                    alert("done");
+                    //reload();
+                }
+            })
+        });
+
+
+        // fetch();
+    });
 </script>
