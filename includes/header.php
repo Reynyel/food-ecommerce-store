@@ -3,11 +3,12 @@ session_start();
 $appurl = "http://localhost/freshcery/";
 
 require dirname(dirname(__FILE__)) . "/config/config.php";
+if (isset($_SESSION['id'])) {
+    $cart = $conn->query("SELECT COUNT(*) as num_products FROM cart WHERE user_id='$_SESSION[id]'");
+    $cart->execute();
 
-$cart = $conn->query("SELECT COUNT(*) as num_products FROM cart WHERE user_id='$_SESSION[id]'");
-$cart->execute();
-
-$num = $cart->fetch(PDO::FETCH_OBJ);
+    $num = $cart->fetch(PDO::FETCH_OBJ);
+}
 ?>
 
 <!DOCTYPE html>
