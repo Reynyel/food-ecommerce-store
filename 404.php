@@ -6,29 +6,21 @@ if (!isset($_SERVER['HTTP_REFERER'])) {
 }
 
 ?>
-<?php require "../includes/header.php"; ?>
-<?php require "../config/config.php"; ?>
+<?php require "includes/header.php"; ?>
+<?php require "config/config.php"; ?>
 <?php
 
-if (!isset($_SESSION['username'])) {
-    echo "<script> window.location.href='" . $appurl . "';</script>";
-}
 
-if (isset($_SESSION['id'])) {
-
-    $delete = $conn->prepare("DELETE FROM cart WHERE user_id = '$_SESSION[id]'");
-    $delete->execute();
-}
 ?>
 <div class="banner">
     <div class="jumbotron jumbotron-bg text-center rounded-0" style="background-image: url('<?php echo $appurl; ?>/assets/img/bg-header.jpg');">
         <div class="container">
             <h1 class="pt-5">
-                Payment has been a success
+                404 page, we cannot find the page that you are looking for.
             </h1>
-            <p class="lead">
+            <!-- <p class="lead">
                 Save time and leave the groceries to us.
-            </p>
+            </p> -->
             <a href="<?php echo $appurl; ?>" class="btn btn-primary text-uppercase">home</a>
 
 
@@ -36,4 +28,4 @@ if (isset($_SESSION['id'])) {
     </div>
 </div>
 
-<?php require "../includes/footer.php"; ?>
+<?php require "includes/footer.php"; ?>

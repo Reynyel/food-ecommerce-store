@@ -1,12 +1,28 @@
+<?php
+if (!isset($_SERVER['HTTP_REFERER'])) {
+    //redirect them to your desired location
+    header('location: http://localhost/freshcery/index.php');
+    exit;
+}
+
+?>
 <?php // Including necessary files 
 require "../includes/header.php";
 require "../config/config.php"; ?>
 <?php
+
+if (!isset($_SESSION['username'])) {
+    echo "<script> window.location.href='" . $appurl . "';</script>";
+}
+
+
+
 $products = $conn->prepare("SELECT * FROM cart WHERE user_id = $_SESSION[id]");
 $products->execute();
 
 $allProducts = $products->fetchAll(PDO::FETCH_OBJ);
 if (isset($_SESSION['price'])) {
+    $_SESSION['price'] = (float) $_SESSION['price']; // Ensure price is a float
     $_SESSION['total_price'] = $_SESSION['price'] + 20;
 }
 if (isset($_POST['submit'])) {

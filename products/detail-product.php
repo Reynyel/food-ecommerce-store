@@ -3,6 +3,11 @@
 require "../includes/header.php";
 require "../config/config.php";
 
+
+if (!isset($_SESSION['username'])) {
+    echo "<script> window.location.href='" . $appurl . "';</script>";
+}
+
 // Handling form submission to add products to cart
 if (isset($_POST['submit'])) {
     // Retrieving form data
@@ -60,6 +65,7 @@ if (isset($_GET['id'])) {
     }
 } else {
     // If no ID parameter is provided, do nothing or handle accordingly
+    echo "<script> window.location.href='" . $appurl . "/404.php';</script>";
 }
 ?>
 <!-- HTML section starts here -->

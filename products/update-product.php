@@ -1,7 +1,20 @@
 <?php
+if (!isset($_SERVER['HTTP_REFERER'])) {
+    //redirect them to your desired location
+    header('location: http://localhost/freshcery/index.php');
+    exit;
+}
+
+?>
+<?php
 // Including necessary files
 require "../includes/header.php";
 require "../config/config.php";
+
+
+if (!isset($_SESSION['username'])) {
+    echo "<script> window.location.href='" . $appurl . "';</script>";
+}
 
 if (isset($_POST['update'])) {
     $id = $_POST['id'];

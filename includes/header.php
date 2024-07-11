@@ -74,8 +74,8 @@ if (isset($_SESSION['id'])) {
                                     <div class="avatar-header"><img src="<?php echo $appurl; ?>/assets/img/logo/<?php echo $_SESSION['image']; ?>"></div> <?php echo $_SESSION['username'] ?>
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="<?php echo $appurl; ?>transaction.php">Transactions History</a>
-                                    <a class="dropdown-item" href="<?php echo $appurl; ?>setting.php">Settings</a>
+                                    <a class="dropdown-item" href="<?php echo $appurl; ?>/users/transaction.php?id=<?php echo $_SESSION['id'] ?>">Transactions History</a>
+                                    <a class="dropdown-item" href="<?php echo $appurl; ?>/users/setting.php?id=<?php echo $_SESSION['id'] ?>">Settings</a>
                                     <a class="dropdown-item" href="<?php echo $appurl; ?>/auth/logout.php">Log out</a>
                                 </div>
                             </li>

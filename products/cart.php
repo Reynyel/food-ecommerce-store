@@ -7,6 +7,10 @@ $products->execute();
 
 $allProducts = $products->fetchAll(PDO::FETCH_OBJ);
 
+if (!isset($_SESSION['username'])) {
+    echo "<script> window.location.href='" . $appurl . "';</script>";
+}
+
 if (isset($_POST['submit'])) {
     $inp_price = $_POST['inp_price'];
 
