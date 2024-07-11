@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
             ":price" => $price,
             ":user_id" => $user_id
         ]);
-        echo "<script>alert('Order has been created');</script>";
+        echo "<script> window.location.href='" . $appurl . "/products/charge.php';</script>";
     }
 }
 ?>
@@ -118,7 +118,7 @@ if (isset($_POST['submit'])) {
                                 <textarea class="form-control" placeholder="Order Notes" name="order_notes"></textarea>
                             </div>
                         </fieldset>
-                        <button name="submit" type="submit" class="btn btn-primary float-right">PROCEED TO CHECKOUT <i class="fa fa-check"></i></button>
+                        <button name="submit" type="submit" class="btn btn-primary float-left">PROCEED TO CHECKOUT <i class="fa fa-check"></i></button>
                     </form>
                     <!-- Bill Detail of the Page end -->
                 </div>
@@ -178,9 +178,9 @@ if (isset($_POST['submit'])) {
 
 
                     </div>
-                    <p class="text-right mt-3">
+                    <!-- <p class="text-right mt-3">
                         <input checked="" type="checkbox"> I’ve read &amp; accept the <a href="#">terms &amp; conditions</a>
-                    </p>
+                    </p> -->
 
                     <div class="clearfix">
                     </div>
