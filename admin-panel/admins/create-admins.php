@@ -3,6 +3,10 @@ require "../layouts/header.php";
 require "../../config/config.php";
 ?>
 <?php
+if (!isset($_SESSION['adminname'])) {
+  echo "<script> window.location.href='" . ADMINURL . "/admins/login-admins.php';</script>";
+} ?>
+<?php
 
 if (isset($_SESSION['username'])) {
   echo "<script> window.location.href='" . ADMINURL . "';</script>";

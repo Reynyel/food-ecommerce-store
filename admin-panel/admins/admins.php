@@ -2,7 +2,10 @@
 require "../layouts/header.php";
 require "../../config/config.php";
 ?>
-
+<?php
+if (!isset($_SESSION['adminname'])) {
+  echo "<script> window.location.href='" . ADMINURL . "/admins/login-admins.php';</script>";
+} ?>
 <!-- query to display admins -->
 <?php
 $admins = $conn->query("SELECT * FROM admins");
