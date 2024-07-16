@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
                                     <?php foreach ($allProducts as $product) : ?>
                                         <tr>
                                             <td>
-                                                <img src="<?php echo $appurl; ?>/assets/img/<?php echo $product->pro_image; ?>" width="60">
+                                                <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $product->pro_image; ?>" width="60">
                                             </td>
                                             <td>
                                                 <?php echo $product->pro_title; ?><br>

@@ -1,8 +1,11 @@
 <?php
 session_start();
 $appurl = "http://localhost/freshcery/";
+define("IMGURLCATEGORY", "http://localhost/freshcery/admin-panel/categories-admins/img_category");
+define("IMGURLPRODUCT", "http://localhost/freshcery/admin-panel/products-admins/img_product");
 
 require dirname(dirname(__FILE__)) . "/config/config.php";
+
 if (isset($_SESSION['id'])) {
     $cart = $conn->query("SELECT COUNT(*) as num_products FROM cart WHERE user_id='$_SESSION[id]'");
     $cart->execute();

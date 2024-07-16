@@ -97,17 +97,17 @@ $allFruits = $fruits->fetchAll(PDO::FETCH_OBJ);
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="assets/img/<?php echo $allMostProduct->image; ?>" alt="Card image 2" class="card-img-top">
+                                        <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $allMostProduct->image; ?>" alt="Card image 2" class="card-img-top">
                                     </div>
                                     <div class="card-body">
                                         <h4 class="card-title">
-                                            <a href="detail-product.html"><?php echo $allMostProduct->title; ?></a>
+                                            <a href="detail-product.php"><?php echo $allMostProduct->title; ?></a>
                                         </h4>
                                         <div class="card-price">
                                             <!-- <span class="discount">Rp. 300.000</span> -->
                                             <span class="reguler">PHP <?php echo $allMostProduct->price; ?></span>
                                         </div>
-                                        <a href="detail-product.html" class="btn btn-block btn-primary">
+                                        <a href="detail-product.php" class="btn btn-block btn-primary">
                                             Add to Cart
                                         </a>
 
@@ -145,7 +145,7 @@ $allFruits = $fruits->fetchAll(PDO::FETCH_OBJ);
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="assets/img/<?php echo $allVegie->image; ?>" alt="Card image 2" class="card-img-top">
+                                        <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $allVegie->image; ?>" alt="Card image 2" class="card-img-top">
                                     </div>
                                     <div class="card-body">
                                         <h4 class="card-title">
@@ -192,7 +192,7 @@ $allFruits = $fruits->fetchAll(PDO::FETCH_OBJ);
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="assets/img/<?php echo $allMeat->image; ?>" alt="Card image 2" class="card-img-top">
+                                        <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $allMeat->image; ?>" alt="Card image 2" class="card-img-top">
                                     </div>
                                     <div class="card-body">
                                         <h4 class="card-title">
@@ -239,7 +239,7 @@ $allFruits = $fruits->fetchAll(PDO::FETCH_OBJ);
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="assets/img/<?php echo $allFish->image; ?>" alt="Card image 2" class="card-img-top">
+                                        <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $allFish->image; ?>" alt="Card image 2" class="card-img-top">
                                     </div>
                                     <div class="card-body">
                                         <h4 class="card-title">
@@ -286,7 +286,7 @@ $allFruits = $fruits->fetchAll(PDO::FETCH_OBJ);
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="assets/img/<?php echo $allFruit->image; ?>" alt="Card image 2" class="card-img-top">
+                                        <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $allFruit->image; ?>" alt="Card image 2" class="card-img-top">
                                     </div>
                                     <div class="card-body">
                                         <h4 class="card-title">

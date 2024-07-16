@@ -4,9 +4,9 @@ require "../includes/header.php";
 require "../config/config.php";
 
 
-if (!isset($_SESSION['username'])) {
-    echo "<script> window.location.href='" . $appurl . "';</script>";
-}
+// if (!isset($_SESSION['username'])) {
+//     echo "<script> window.location.href='" . $appurl . "';</script>";
+// }
 
 // Handling form submission to add products to cart
 if (isset($_POST['submit'])) {
@@ -90,8 +90,8 @@ if (isset($_GET['id'])) {
                 <!-- Product image slider -->
                 <div class="col-sm-6">
                     <div class="slider-zoom">
-                        <a href="<?php echo $appurl; ?>/assets/img/<?php echo $product->image; ?>" class="cloud-zoom" rel="transparentImage: 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', useWrapper: false, showTitle: false, zoomWidth:'500', zoomHeight:'500', adjustY:0, adjustX:10" id="cloudZoom">
-                            <img alt="Detail Zoom thumbs image" src="<?php echo $appurl; ?>/assets/img/<?php echo $product->image; ?>" style="width: 100%;">
+                        <a href="<?php echo IMGURLPRODUCT; ?>/<?php echo $product->image; ?>" class="cloud-zoom" rel="transparentImage: 'data:image/gif;base64,R0lGODlhAQABAID/AMDAwAAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==', useWrapper: false, showTitle: false, zoomWidth:'500', zoomHeight:'500', adjustY:0, adjustX:10" id="cloudZoom">
+                            <img alt="Detail Zoom thumbs image" src="<?php echo IMGURLPRODUCT; ?>/<?php echo $product->image; ?>" style="width: 100%;">
                         </a>
                     </div>
                 </div>
@@ -197,7 +197,7 @@ if (isset($_GET['id'])) {
                                                 20% OFF
                                             </span>
                                         </div>
-                                        <img src="<?php echo $appurl; ?>assets/img/<?php echo $allRelatedProduct->image; ?>" class="card-img-top" alt="...">
+                                        <img src="<?php echo IMGURLPRODUCT; ?>/<?php echo $allRelatedProduct->image; ?>" class="card-img-top" alt="...">
                                     </div>
                                     <div class="card-body">
                                         <h5 class="card-title">
