@@ -23,7 +23,7 @@ $allProducts = $products->fetchAll(PDO::FETCH_OBJ);
     <div class="card">
       <div class="card-body">
         <h5 class="card-title mb-4 d-inline">Products</h5>
-        <a href="create-products.php" class="btn btn-primary mb-4 text-center float-right">Create Products</a>
+        <a href="<?php echo ADMINURL; ?>/products-admins/create-products.php" class="btn btn-primary mb-4 text-center float-right">Create Products</a>
 
         <table class="table">
           <thead>
